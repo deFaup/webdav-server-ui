@@ -1,22 +1,22 @@
 # WebDAV File Sharing UI — Task List
 
-> Last updated: 2026-04-29
+> Last updated: 2026-04-30
 
 ---
 
 ## Phase 1: Project Setup
 
-- [ ] **1. Init npm project + install dependencies**
+- [x] **1. Init npm project + install dependencies**
   - Description: `npm init`, install vite, tailwindcss, postcss, autoprefixer, webdav
   - Dependencies: none
   - Complexity: small
-  - Status: pending
+  - Status: done
 
 - [ ] **2. Configure Vite**
   - Description: Create `vite.config.js` with dual build support (local + extension targets). Set up separate entry points and output dirs.
   - Dependencies: 1
   - Complexity: medium
-  - Status: pending
+  - Status: done
 
 - [ ] **3. Tailwind CSS setup**
   - Description: Create `tailwind.config.js`, `postcss.config.js`, base CSS file with Tailwind directives.

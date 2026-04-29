@@ -1,0 +1,30 @@
+{
+  "name": "webdav-server-ui",
+  "version": "1.0.0",
+  "description": "a simple ui for filesharing through webdav",
+  "keywords": [],
+  "homepage": "https://github.com/deFaup/webdav-server-ui#readme",
+  "bugs": {
+    "url": "https://github.com/deFaup/webdav-server-ui/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deFaup/webdav-server-ui.git"
+  },
+  "license": "MIT",
+  "author": "deFaup",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "webdav": "^5.9.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.12",
+    "tailwindcss": "^4.2.4",
+    "vite": "^8.0.10"
+  }
+}
