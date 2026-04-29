@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebDAV UI — Task Tracker</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --border: #334155;
+    --text: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-faint: #475569;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --purple: #8b5cf6;
+    --green-bg: #064e3b;
+    --green-text: #6ee7b7;
+    --green-border: #065f46;
+    --amber-bg: #78350f;
+    --amber-text: #fbbf24;
+    --red-bg: #7f1d1d;
+    --red-text: #fca5a5;
+    --blue-bg: #1e3a5f;
+    --blue-text: #60a5fa;
+    --blue-border: #1e40af;
+    --phase-hover: #1e293b88;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --text-faint: #94a3b8;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --purple: #7c3aed;
+      --green-bg: #d1fae5;
+      --green-text: #065f46;
+      --green-border: #a7f3d0;
+      --amber-bg: #fef3c7;
+      --amber-text: #92400e;
+      --red-bg: #fee2e2;
+      --red-text: #991b1b;
+      --blue-bg: #dbeafe;
+      --blue-text: #1e40af;
+      --blue-border: #bfdbfe;
+      --phase-hover: #f1f5f9;
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .subtitle { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem; }
+
+  /* Summary bar */
+  .summary { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .summary-card { background: var(--surface); border-radius: 8px; padding: 0.75rem 1.25rem; flex: 1; min-width: 120px; border: 1px solid var(--border); }
+  .summary-card .label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .summary-card .value { font-size: 1.5rem; font-weight: 700; }
+
+  /* Overall progress */
+  .overall-progress { background: var(--surface); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; border: 1px solid var(--border); }
+  .overall-progress .bar-bg { background: var(--border); border-radius: 999px; height: 10px; overflow: hidden; margin-top: 0.5rem; }
+  .overall-progress .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--purple)); transition: width 0.4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); }
+
+  /* Filter */
+  .filter-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .filter-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.4rem 0.9rem; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; }
+  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* Phase */
+  .phase { background: var(--surface); border-radius: 10px; margin-bottom: 1rem; overflow: hidden; border: 1px solid var(--border); }
+  .phase-header { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; cursor: pointer; user-select: none; }
+  .phase-header:hover { background: var(--phase-hover); }
+  .chevron { font-size: 0.8rem; color: var(--text-muted); transition: transform 0.2s; width: 1rem; text-align: center; }
+  .phase.collapsed .chevron { transform: rotate(-90deg); }
+  .phase-title { font-weight: 600; font-size: 1rem; flex: 1; }
+  .phase-meta { display: flex; gap: 0.75rem; align-items: center; font-size: 0.8rem; color: var(--text-secondary); }
+  .phase-bar { width: 100px; background: var(--border); border-radius: 999px; height: 6px; overflow: hidden; }
+  .phase-bar-fill { height: 100%; border-radius: 999px; background: var(--accent); transition: width 0.4s ease; }
+
+  /* Tasks */
+  .phase-tasks { padding: 0 1.25rem 1rem; }
+  .phase.collapsed .phase-tasks { display: none; }
+  .task { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+  .task:last-child { border-bottom: none; }
+  .task input[type="checkbox"] { margin-top: 0.3rem; accent-color: var(--accent); cursor: pointer; width: 16px; height: 16px; }
+  .task-body { flex: 1; }
+  .task-name { font-weight: 600; font-size: 0.9rem; }
+  .task.done .task-name { text-decoration: line-through; color: var(--text-muted); }
+  .task-desc { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.15rem; }
+  .task-meta { display: flex; gap: 0.5rem; margin-top: 0.35rem; flex-wrap: wrap; }
+  .badge { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 999px; font-weight: 600; }
+  .badge-small { background: var(--green-bg); color: var(--green-text); }
+  .badge-medium { background: var(--amber-bg); color: var(--amber-text); }
+  .badge-large { background: var(--red-bg); color: var(--red-text); }
+  .badge-dep { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
+  .badge-status { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); text-transform: capitalize; }
+  .badge-status.done { background: var(--green-bg); color: var(--green-text); border-color: var(--green-border); }
+  .badge-status.in-progress { background: var(--blue-bg); color: var(--blue-text); border-color: var(--blue-border); }
+
+  .timestamp { text-align: right; color: var(--text-faint); font-size: 0.75rem; margin-top: 1.5rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>WebDAV File Sharing UI</h1>
+  <p class="subtitle">Implementation Task Tracker</p>
+
+  <div class="summary" id="summary"></div>
+  <div class="overall-progress" id="overallProgress"></div>
+  <div class="filter-bar" id="filterBar"></div>
+  <div id="phases"></div>
+  <div class="timestamp" id="timestamp"></div>
+</div>
+
+<script>
+const TASKS = {
+  lastUpdated: "2026-04-29",
+  phases: [
+    {
+      name: "Phase 1: Project Setup",
+      tasks: [
+        { id: 1, name: "Init npm project + install dependencies", desc: "npm init, install vite, tailwindcss, postcss, autoprefixer, webdav", deps: [], complexity: "small", status: "pending" },
+        { id: 2, name: "Configure Vite", desc: "vite.config.js with dual build support (local + extension targets), separate entry points and output dirs", deps: [1], complexity: "medium", status: "pending" },
+        { id: 3, name: "Tailwind CSS setup", desc: "tailwind.config.js, postcss.config.js, base CSS file with Tailwind directives", deps: [1], complexity: "small", status: "pending" },
+        { id: 4, name: "Project structure", desc: "Directory layout: src/ (components, utils, styles), public/, extension-specific folders", deps: [], complexity: "small", status: "done" }
+      ]
+    },
+    {
+      name: "Phase 2: Core WebDAV Client",
+      tasks: [
+        { id: 5, name: "WebDAV client wrapper", desc: "Module wrapping webdav npm createClient(). Accept server URL + auth config. Export singleton or factory.", deps: [4], complexity: "medium", status: "pending" },
+        { id: 6, name: "Auth module", desc: "Basic auth credentials. Store in sessionStorage. Provide login/logout/restore-session functions.", deps: [5], complexity: "small", status: "pending" },
+        { id: 7, name: "File operations", desc: "listDirectory(path), getFileStats(path), deleteItem(path) using WebDAV client wrapper.", deps: [5], complexity: "medium", status: "pending" },
+        { id: 8, name: "Download", desc: "Single file download via WebDAV GET. Trigger browser download via blob URL.", deps: [7], complexity: "small", status: "pending" }
+      ]
+    },
+    {
+      name: "Phase 3: File Browser UI",
+      tasks: [
+        { id: 9, name: "Login form", desc: "Server URL + username/password fields. Validate inputs. Connect via auth module. Show errors.", deps: [6], complexity: "medium", status: "pending" },
+        { id: 10, name: "File list view", desc: "Table with columns: name, size (human-readable), modified date, type icon. Render from listDirectory().", deps: [7], complexity: "medium", status: "pending" },
+        { id: 11, name: "Folder navigation", desc: "Breadcrumb trail. Click folder to enter, click breadcrumb to jump. Back button.", deps: [10], complexity: "medium", status: "pending" },
+        { id: 12, name: "Grid view toggle", desc: "Card/grid layout with thumbnail previews for images. Toggle between list and grid.", deps: [10], complexity: "small", status: "pending" },
+        { id: 13, name: "Download button per file", desc: "Download action on each file row/card. Triggers download from task 8.", deps: [8, 10], complexity: "small", status: "pending" }
+      ]
+    },
+    {
+      name: "Phase 4: Upload",
+      tasks: [
+        { id: 14, name: "Basic upload", desc: "File picker button, drag-and-drop zone. Upload via WebDAV PUT. Progress bar per file.", deps: [7], complexity: "medium", status: "pending" },
+        { id: 15, name: "Chunked upload", desc: "Files >50MB: split into chunks, sequential PUT per chunk. Track overall progress. Configurable chunk size.", deps: [14], complexity: "large", status: "pending" }
+      ]
+    },
+    {
+      name: "Phase 5: Dual Build Targets",
+      tasks: [
+        { id: 16, name: "Local build config", desc: "Vite build entry: index.html. Output: dist/. Standard web app. Document CORS requirement.", deps: [2], complexity: "small", status: "pending" },
+        { id: 17, name: "Extension build config", desc: "Chrome MV3 extension. manifest.json, popup.html -> new tab. Output: dist-extension/.", deps: [2], complexity: "medium", status: "pending" },
+        { id: 18, name: "Extension host_permissions", desc: "host_permissions: [\"<all_urls>\"] in manifest to bypass CORS. Validate it works.", deps: [17], complexity: "small", status: "pending" },
+        { id: 19, name: "Shared core extraction", desc: "Ensure src/ core code imported identically by both entry points. No duplication.", deps: [2], complexity: "medium", status: "pending" }
+      ]
+    },
+    {
+      name: "Phase 6: Polish",
+      tasks: [
+        { id: 20, name: "Error handling", desc: "Network errors, 401/403 auth failures, timeouts. User-friendly toast/alert. Retry option.", deps: [9], complexity: "medium", status: "pending" },
+        { id: 21, name: "Loading states", desc: "Spinner/skeleton while directory loads. Disable buttons during operations. Upload progress.", deps: [10], complexity: "small", status: "pending" },
+        { id: 22, name: "Responsive design", desc: "Mobile-friendly layout. Stack columns on small screens. Touch-friendly tap targets.", deps: [10], complexity: "small", status: "pending" }
+      ]
+    }
+  ]
+};
+
+let activeFilter = "all";
+
+function countByStatus(tasks, status) {
+  return tasks.filter(t => t.status === status).length;
+}
+
+function allTasks() {
+  return TASKS.phases.flatMap(p => p.tasks);
+}
+
+function filteredTasks(tasks) {
+  if (activeFilter === "all") return tasks;
+  return tasks.filter(t => t.status === activeFilter);
+}
+
+function renderSummary() {
+  const all = allTasks();
+  const total = all.length;
+  const done = countByStatus(all, "done");
+  const inProgress = countByStatus(all, "in-progress");
+  const pending = countByStatus(all, "pending");
+  document.getElementById("summary").innerHTML = `
+    <div class="summary-card"><div class="label">Total</div><div class="value">${total}</div></div>
+    <div class="summary-card"><div class="label">Done</div><div class="value" style="color:var(--green-text)">${done}</div></div>
+    <div class="summary-card"><div class="label">In Progress</div><div class="value" style="color:var(--blue-text)">${inProgress}</div></div>
+    <div class="summary-card"><div class="label">Pending</div><div class="value" style="color:var(--text-secondary)">${pending}</div></div>
+  `;
+}
+
+function renderOverallProgress() {
+  const all = allTasks();
+  const pct = all.length ? Math.round(countByStatus(all, "done") / all.length * 100) : 0;
+  document.getElementById("overallProgress").innerHTML = `
+    <div class="progress-label"><span>Overall Progress</span><span>${pct}%</span></div>
+    <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
+  `;
+}
+
+function renderFilters() {
+  const filters = ["all", "pending", "in-progress", "done"];
+  document.getElementById("filterBar").innerHTML = filters.map(f =>
+    `<button class="filter-btn ${activeFilter === f ? 'active' : ''}" data-filter="${f}">${f === 'all' ? 'All' : f === 'in-progress' ? 'In Progress' : f.charAt(0).toUpperCase() + f.slice(1)}</button>`
+  ).join("");
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => { activeFilter = btn.dataset.filter; render(); });
+  });
+}
+
+function renderPhases() {
+  const container = document.getElementById("phases");
+  container.innerHTML = TASKS.phases.map((phase, pi) => {
+    const tasks = filteredTasks(phase.tasks);
+    const done = countByStatus(phase.tasks, "done");
+    const pct = phase.tasks.length ? Math.round(done / phase.tasks.length * 100) : 0;
+    const collapsed = pct === 100 ? " collapsed" : "";
+    return `
+      <div class="phase${collapsed}" data-phase="${pi}">
+        <div class="phase-header">
+          <span class="chevron">&#9660;</span>
+          <span class="phase-title">${phase.name}</span>
+          <div class="phase-meta">
+            <span>${done}/${phase.tasks.length}</span>
+            <div class="phase-bar"><div class="phase-bar-fill" style="width:${pct}%"></div></div>
+          </div>
+        </div>
+        <div class="phase-tasks">
+          ${tasks.length === 0 ? '<div style="color:var(--text-faint);font-size:0.8rem;padding:0.5rem 0;">No tasks match filter</div>' : tasks.map(t => `
+            <div class="task ${t.status === 'done' ? 'done' : ''}" data-id="${t.id}">
+              <input type="checkbox" ${t.status === 'done' ? 'checked' : ''} data-id="${t.id}">
+              <div class="task-body">
+                <div class="task-name">${t.id}. ${t.name}</div>
+                <div class="task-desc">${t.desc}</div>
+                <div class="task-meta">
+                  <span class="badge badge-${t.complexity}">${t.complexity}</span>
+                  <span class="badge badge-status ${t.status}">${t.status}</span>
+                  ${t.deps.length ? `<span class="badge badge-dep">depends on: ${t.deps.join(', ')}</span>` : ''}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  // Toggle collapse
+  document.querySelectorAll(".phase-header").forEach(header => {
+    header.addEventListener("click", () => {
+      header.parentElement.classList.toggle("collapsed");
+    });
+  });
+
+  // Checkbox toggle (cycles: pending -> in-progress -> done -> pending)
+  document.querySelectorAll(".task input[type='checkbox']").forEach(cb => {
+    cb.addEventListener("change", () => {
+      const id = parseInt(cb.dataset.id);
+      for (const phase of TASKS.phases) {
+        const task = phase.tasks.find(t => t.id === id);
+        if (task) {
+          const cycle = { "pending": "in-progress", "in-progress": "done", "done": "pending" };
+          task.status = cycle[task.status];
+          break;
+        }
+      }
+      render();
+    });
+  });
+}
+
+function renderTimestamp() {
+  document.getElementById("timestamp").textContent = `Last updated: ${TASKS.lastUpdated}`;
+}
+
+function render() {
+  renderSummary();
+  renderOverallProgress();
+  renderFilters();
+  renderPhases();
+  renderTimestamp();
+}
+
+render();
+</script>
+</body>
+</html>
