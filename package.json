@@ -13,10 +13,11 @@
   },
   "license": "MIT",
   "author": "deFaup",
-  "type": "commonjs",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build:local": "vite build",
+    "build:extension": "vite build --mode extension"
   },
   "dependencies": {
     "webdav": "^5.9.0"
