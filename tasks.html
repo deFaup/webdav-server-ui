@@ -127,7 +127,7 @@
 
 <script>
 const TASKS = {
-  lastUpdated: "2026-04-29",
+  lastUpdated: "2026-04-30",
   phases: [
     {
       name: "Phase 1: Project Setup",
@@ -141,10 +141,10 @@ const TASKS = {
     {
       name: "Phase 2: Core WebDAV Client",
       tasks: [
-        { id: 5, name: "WebDAV client wrapper", desc: "Module wrapping webdav npm createClient(). Accept server URL + auth config. Export singleton or factory.", deps: [4], complexity: "medium", status: "pending" },
-        { id: 6, name: "Auth module", desc: "Basic auth credentials. Store in sessionStorage. Provide login/logout/restore-session functions.", deps: [5], complexity: "small", status: "pending" },
-        { id: 7, name: "File operations", desc: "listDirectory(path), getFileStats(path), deleteItem(path) using WebDAV client wrapper.", deps: [5], complexity: "medium", status: "pending" },
-        { id: 8, name: "Download", desc: "Single file download via WebDAV GET. Trigger browser download via blob URL.", deps: [7], complexity: "small", status: "pending" }
+        { id: 5, name: "WebDAV client wrapper", desc: "Module wrapping webdav npm createClient(). Accept server URL + auth config. Export singleton or factory.", deps: [4], complexity: "medium", status: "done" },
+        { id: 6, name: "Auth module", desc: "Basic auth credentials. Store in sessionStorage. Provide login/logout/restore-session functions.", deps: [5], complexity: "small", status: "done" },
+        { id: 7, name: "File operations", desc: "listDirectory(path), getFileStats(path), deleteItem(path) using WebDAV client wrapper.", deps: [5], complexity: "medium", status: "done" },
+        { id: 8, name: "Download", desc: "Single file download via WebDAV GET. Trigger browser download via blob URL.", deps: [7], complexity: "small", status: "done" }
       ]
     },
     {

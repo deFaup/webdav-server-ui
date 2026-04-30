@@ -34,29 +34,29 @@
 
 ## Phase 2: Core WebDAV Client
 
-- [ ] **5. WebDAV client wrapper**
+- [x] **5. WebDAV client wrapper**
   - Description: Create module wrapping `webdav` npm package's `createClient()`. Accept server URL + auth config. Export singleton or factory.
   - Dependencies: 4
   - Complexity: medium
-  - Status: pending
+  - Status: done
 
-- [ ] **6. Auth module**
+- [x] **6. Auth module**
   - Description: Handle Basic auth credentials. Store in `sessionStorage`. Provide login/logout/restore-session functions.
   - Dependencies: 5
   - Complexity: small
-  - Status: pending
+  - Status: done
 
-- [ ] **7. File operations**
+- [x] **7. File operations**
   - Description: Implement `listDirectory(path)`, `getFileStats(path)`, `deleteItem(path)` using WebDAV client wrapper.
   - Dependencies: 5
   - Complexity: medium
-  - Status: pending
+  - Status: done
 
-- [ ] **8. Download**
+- [x] **8. Download**
   - Description: Implement single file download via WebDAV GET. Trigger browser download via blob URL.
   - Dependencies: 7
   - Complexity: small
-  - Status: pending
+  - Status: done
 
 ---
 
