@@ -12,17 +12,17 @@
   - Complexity: small
   - Status: done
 
-- [ ] **2. Configure Vite**
+- [x] **2. Configure Vite**
   - Description: Create `vite.config.js` with dual build support (local + extension targets). Set up separate entry points and output dirs.
   - Dependencies: 1
   - Complexity: medium
   - Status: done
 
-- [ ] **3. Tailwind CSS setup**
+- [x] **3. Tailwind CSS setup**
   - Description: Create `tailwind.config.js`, `postcss.config.js`, base CSS file with Tailwind directives.
   - Dependencies: 1
   - Complexity: small
-  - Status: pending
+  - Status: done
 
 - [x] **4. Project structure**
   - Description: Create directory layout: `src/` (components, utils, styles), `public/`, extension-specific folders.
