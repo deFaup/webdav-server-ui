@@ -118,11 +118,11 @@
   - Complexity: small
   - Status: pending
 
-- [ ] **17. Extension build config**
+- [x] **17. Extension build config**
   - Description: Separate Vite build entry for Chrome MV3 extension. `manifest.json`, `popup.html` → opens new tab. Output: `dist-extension/`.
   - Dependencies: 2
   - Complexity: medium
-  - Status: pending
+  - Status: done
 
 - [ ] **18. Extension host_permissions**
   - Description: Configure `host_permissions: ["<all_urls>"]` in manifest to bypass CORS. Validate it works.

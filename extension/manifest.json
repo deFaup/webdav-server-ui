@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "WebDAV File Browser",
+  "version": "1.0.0",
+  "description": "Browse and manage files on WebDAV servers",
+  "action": {},
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["tabs"]
+}

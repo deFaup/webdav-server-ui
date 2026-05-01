@@ -9,9 +9,7 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: isExtension ? 'dist-extension' : 'dist',
       rollupOptions: {
-        input: isExtension
-          ? { tab: resolve(__dirname, 'extension/tab.html') }
-          : { main: resolve(__dirname, 'index.html') },
+        input: { main: resolve(__dirname, 'index.html') },
       },
     },
   };

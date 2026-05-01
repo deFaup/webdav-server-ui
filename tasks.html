@@ -168,7 +168,7 @@ const TASKS = {
       name: "Phase 5: Dual Build Targets",
       tasks: [
         { id: 16, name: "Local build config", desc: "Vite build entry: index.html. Output: dist/. Standard web app. Document CORS requirement.", deps: [2], complexity: "small", status: "pending" },
-        { id: 17, name: "Extension build config", desc: "Chrome MV3 extension. manifest.json, popup.html -> new tab. Output: dist-extension/.", deps: [2], complexity: "medium", status: "pending" },
+        { id: 17, name: "Extension build config", desc: "Chrome MV3 extension. manifest.json, popup.html -> new tab. Output: dist-extension/.", deps: [2], complexity: "medium", status: "done" },
         { id: 18, name: "Extension host_permissions", desc: "host_permissions: [\"<all_urls>\"] in manifest to bypass CORS. Validate it works.", deps: [17], complexity: "small", status: "pending" },
         { id: 19, name: "Shared core extraction", desc: "Ensure src/ core code imported identically by both entry points. No duplication.", deps: [2], complexity: "medium", status: "pending" }
       ]

@@ -144,3 +144,4 @@ vite.config.ts.timestamp-*
 
 # local files
 .claude/prompts.*
+dist-extension/*
