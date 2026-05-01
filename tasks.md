@@ -1,6 +1,6 @@
 # WebDAV File Sharing UI — Task List
 
-> Last updated: 2026-04-30
+> Last updated: 2026-05-01
 
 ---
 
@@ -74,13 +74,12 @@
   - Complexity: medium
   - Status: done
 
-- [ ] **11. Folder navigation**
-  - Description: Breadcrumb trail showing current path. Click folder to enter, click breadcrumb segment to jump. Back button.
-  - Dependencies: 10
-  - Complexity: medium
-  - Status: pending
+- [x] **11. Implement layout**
+  - Description: Header with logo and search bar, Sidebar for server management and directory navigation, navigeable Breadcrum trail showing path, main file list view with file navigation.
+  - Complexity: hard
+  - Status: done
 
-- [ ] **12. Grid view toggle**
+- [ ] **12. Implement card view**
   - Description: Card/grid layout with thumbnail previews for images. Toggle between list and grid views.
   - Dependencies: 10
   - Complexity: small

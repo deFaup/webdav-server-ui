@@ -58,7 +58,7 @@ export function renderLogin(container, onLogin) {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    errorEl.classList.add('hidden');
+    errorEl.classList.remove('visible');
 
     const url = document.getElementById('server-url').value.trim();
     const username = document.getElementById('username').value.trim();

@@ -127,7 +127,7 @@
 
 <script>
 const TASKS = {
-  lastUpdated: "2026-04-30",
+  lastUpdated: "2026-05-01",
   phases: [
     {
       name: "Phase 1: Project Setup",
@@ -152,7 +152,7 @@ const TASKS = {
       tasks: [
         { id: 9, name: "Login form", desc: "Server URL + username/password fields. Validate inputs. Connect via auth module. Show errors.", deps: [6], complexity: "medium", status: "done" },
         { id: 10, name: "File list view", desc: "Table with columns: name, size (human-readable), modified date, type icon. Render from listDirectory().", deps: [7], complexity: "medium", status: "done" },
-        { id: 11, name: "Folder navigation", desc: "Breadcrumb trail. Click folder to enter, click breadcrumb to jump. Back button.", deps: [10], complexity: "medium", status: "pending" },
+        { id: 11, name: "Implement layout", desc: "Header with logo and search bar, Sidebar for server management and directory navigation, navigeable Breadcrum trail showing path, main file list view with file navigation.", deps: [10], complexity: "hard", status: "done" },
         { id: 12, name: "Grid view toggle", desc: "Card/grid layout with thumbnail previews for images. Toggle between list and grid.", deps: [10], complexity: "small", status: "pending" },
         { id: 13, name: "Download button per file", desc: "Download action on each file row/card. Triggers download from task 8.", deps: [8, 10], complexity: "small", status: "pending" }
       ]
