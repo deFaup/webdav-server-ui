@@ -62,11 +62,11 @@
 
 ## Phase 3: File Browser UI
 
-- [ ] **9. Login form**
+- [x] **9. Login form**
   - Description: Server URL input + username/password fields. Validate inputs. Connect via auth module. Show errors.
   - Dependencies: 6
   - Complexity: medium
-  - Status: pending
+  - Status: done
 
 - [ ] **10. File list view**
   - Description: Table layout with columns: name, size (human-readable), modified date, type icon. Render from `listDirectory()` results.

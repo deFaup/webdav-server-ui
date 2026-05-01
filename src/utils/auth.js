@@ -4,6 +4,9 @@ const STORAGE_KEY = 'webdav_auth';
 
 export function login(url, username, password) {
   const client = createWebdavClient(url, username, password);
+  // Validate server is reachable
+  await client.getDirectoryContents("/");
+
   sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ url, username, password }));
   return client;
 }

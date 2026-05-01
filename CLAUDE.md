@@ -19,3 +19,7 @@ When implementing, update both files @tasks.html and @tasks.md to reflect progre
 ## Known Limitations
 
 - Download loads full file into memory — not suitable for files > ~500MB without streaming.
+
+## Theme
+Theme should match user's system theme
+OS theme — add prefers-color-scheme media query to login component styles

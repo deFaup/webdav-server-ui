@@ -7,11 +7,13 @@ export function getClient() {
 }
 
 export function createWebdavClient(url, username, password) {
-  client = createClient(url, {
-    authType: 'Basic',
-    username,
-    password,
-  });
+  const opts = {};
+  if (username && password) {
+    opts.authType = 'password';
+    opts.username = username;
+    opts.password = password;
+  }
+  client = createClient(url, opts);
   return client;
 }
 
