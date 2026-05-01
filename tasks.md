@@ -68,11 +68,11 @@
   - Complexity: medium
   - Status: done
 
-- [ ] **10. File list view**
+- [x] **10. File list view**
   - Description: Table layout with columns: name, size (human-readable), modified date, type icon. Render from `listDirectory()` results.
   - Dependencies: 7
   - Complexity: medium
-  - Status: pending
+  - Status: done
 
 - [ ] **11. Folder navigation**
   - Description: Breadcrumb trail showing current path. Click folder to enter, click breadcrumb segment to jump. Back button.

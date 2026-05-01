@@ -1,13 +1,14 @@
 import { restoreSession } from './utils/auth.js';
 import { renderLogin } from './components/login.js';
+import { renderFileList } from './components/file-list.js';
 
 function init() {
   const app = document.getElementById('app');
   const client = restoreSession();
   if (client) {
-    app.innerHTML = '<p>Session restored. File browser coming soon.</p>';
+    renderFileList(app, '/');
   } else {
-    renderLogin(app);
+    renderLogin(app, () => renderFileList(app, '/'));
   }
 }
 

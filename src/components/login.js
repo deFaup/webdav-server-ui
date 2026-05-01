@@ -1,6 +1,6 @@
 import { login } from '../utils/auth.js';
 
-export function renderLogin(container) {
+export function renderLogin(container, onLogin) {
   container.innerHTML = `
     <style>
       .login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; }
@@ -70,7 +70,8 @@ export function renderLogin(container) {
 
     try {
       await login(url, username, password);
-      container.innerHTML = '<p style="color:#4ade80;padding:2rem;">Connected. File browser coming soon.</p>';
+      if (onLogin) onLogin();
+      else container.innerHTML = '<p style="color:#4ade80;padding:2rem;">Connected.</p>';
     } catch (err) {
       errorEl.textContent = err.message || 'Connection failed';
       errorEl.classList.add('visible');
