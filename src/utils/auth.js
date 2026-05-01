@@ -1,9 +1,14 @@
 import { createWebdavClient, clearClient } from './webdav-client.js';
+import { requestHostPermission } from './permissions.js';
 
 const STORAGE_KEY = 'webdav_auth';
 
-export function login(url, username, password) {
+export async function login(url, username, password) {
+  // Request permission for this host if running as extension
+  await requestHostPermission(url);
+
   const client = createWebdavClient(url, username, password);
+
   // Validate server is reachable
   await client.getDirectoryContents("/");
 

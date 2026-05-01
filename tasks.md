@@ -124,11 +124,11 @@
   - Complexity: medium
   - Status: done
 
-- [ ] **18. Extension host_permissions**
+- [x] **18. Extension host_permissions**
   - Description: Configure `host_permissions: ["<all_urls>"]` in manifest to bypass CORS. Validate it works.
   - Dependencies: 17
   - Complexity: small
-  - Status: pending
+  - Status: done
 
 - [ ] **19. Shared core extraction**
   - Description: Ensure `src/` core code is imported identically by both local and extension entry points. No duplication.

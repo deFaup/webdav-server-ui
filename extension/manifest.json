@@ -3,6 +3,7 @@
   "name": "WebDAV File Browser",
   "version": "1.0.0",
   "description": "Browse and manage files on WebDAV servers",
+  "optional_host_permissions": ["<all_urls>"],
   "action": {},
   "background": {
     "service_worker": "background.js"
