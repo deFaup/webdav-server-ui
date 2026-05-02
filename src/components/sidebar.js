@@ -1,5 +1,4 @@
-import { getState, setCurrentPath, setCurrentServer, setSidebarWidth, addServer } from '../utils/state.js';
-import { createWebdavClient } from '../utils/webdav-client.js';
+import { getState, setCurrentPath, setSidebarWidth, addServer } from '../utils/state.js';
 import { getClient } from '../utils/webdav-client.js';
 
 // Directory listing cache (persists across sidebar re-renders)
@@ -130,28 +129,21 @@ export function renderSidebar(container) {
 }
 
 function renderServerEntry(container, server, isActive, currentPath) {
-  // Defensive expand: always expand the active server's tree by default.
-  // This ensures the tree is visible when switching servers.
-  if (isActive) {
-    expandedPaths.add('__server__' + server.url);
-  }
-
-  const isServerRootExpanded = expandedPaths.has('__server__' + server.url);
+  const key = '__server__' + server.url;
+  const isExpanded = expandedPaths.has(key);
   const el = document.createElement('div');
   el.className = 'sb-server';
   el.innerHTML = `
     <div class="sb-server-header${isActive ? ' active' : ''}">
-      <span class="sb-server-chevron" data-server-toggle="${server.url}">${isServerRootExpanded ? '▼' : '▶'}</span>
+      <span class="sb-server-chevron" data-server-toggle="${server.url}">${isExpanded ? '▼' : '▶'}</span>
       <span class="sb-server-name" data-server-nav="${server.url}">${esc(server.name || server.url)}</span>
     </div>
-    <div class="sb-tree" id="sb-tree-${CSS.escape(server.url)}" style="${isServerRootExpanded ? '' : 'display:none'}"></div>
+    <div class="sb-tree" id="sb-tree-${CSS.escape(server.url)}" style="${isExpanded ? '' : 'display:none'}"></div>
   `;
   container.appendChild(el);
 
   const tree = el.querySelector('.sb-tree');
-
-  // If this server's root was expanded, load its tree
-  if (isServerRootExpanded) {
+  if (isExpanded) {
     renderTreeLevel(tree, '/', server, currentPath);
   }
 }
@@ -196,13 +188,13 @@ export function setupSidebarEvents(sidebarEl, { onNavigate }) {
   if (sidebarEl.dataset.sidebarEventsAttached) return;
   sidebarEl.dataset.sidebarEventsAttached = 'true';
   sidebarEl.addEventListener('click', async (e) => {
-    // --- Server chevron toggle (expand/collapse root tree) ---
+    // --- Server chevron click (toggle tree expand/collapse) ---
     const serverToggle = e.target.closest('[data-server-toggle]');
     if (serverToggle) {
       e.stopPropagation();
       const url = serverToggle.dataset.serverToggle;
       const key = '__server__' + url;
-      const tree = sidebarEl.querySelector(`#sb-tree-${CSS.escape(url)}`);
+      const tree = document.getElementById(`sb-tree-${CSS.escape(url)}`);
       if (!tree) return;
 
       if (expandedPaths.has(key)) {
@@ -212,8 +204,7 @@ export function setupSidebarEvents(sidebarEl, { onNavigate }) {
       } else {
         expandedPaths.add(key);
         serverToggle.textContent = '▼';
-        tree.style.display = '';
-        // Load tree if empty
+        tree.style.display = 'block';
         if (tree.children.length === 0) {
           tree.innerHTML = '<div class="sb-loading">Loading...</div>';
           const state = getState();
@@ -229,19 +220,7 @@ export function setupSidebarEvents(sidebarEl, { onNavigate }) {
     // --- Server name click (navigate to server root) ---
     const serverNav = e.target.closest('[data-server-nav]');
     if (serverNav) {
-      const url = serverNav.dataset.serverNav;
-      const state = getState();
-      const server = state.servers.find(s => s.url === url);
-      if (server) {
-        // CRITICAL: Set expandedPaths BEFORE calling setCurrentServer.
-        // setCurrentServer triggers notify() -> subscribe callback -> renderSidebar,
-        // which rebuilds the DOM. expandedPaths must be set first so the new DOM
-        // is built with the tree expanded.
-        expandedPaths.add('__server__' + url);
-        setCurrentServer(server);
-        // No need to call onNavigate('/') — setCurrentServer already resets
-        // currentPath to '/' and triggers notify() which refreshes content.
-      }
+      onNavigate('/');
       return;
     }
 
@@ -260,7 +239,7 @@ export function setupSidebarEvents(sidebarEl, { onNavigate }) {
       } else {
         expandedPaths.add(dirPath);
         treeChevron.textContent = '▼';
-        childrenEl.style.display = '';
+        childrenEl.style.display = 'block';
         // Load children if empty
         if (childrenEl.children.length === 0) {
           childrenEl.innerHTML = '<div class="sb-loading">Loading...</div>';
