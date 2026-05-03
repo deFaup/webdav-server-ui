@@ -76,6 +76,43 @@ function getFileIcon(type, name) {
 }
 
 let viewMode = 'list'; // 'list' | 'grid'
+let colWidths = { name: '1fr', size: '120px' };
+
+function getGridCols() {
+  return `${colWidths.name} ${colWidths.size} 1fr 48px`;
+}
+
+function initResize(container) {
+  const handles = container.querySelectorAll('.fl-resize-handle');
+  handles.forEach(handle => {
+    handle.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      const col = handle.dataset.col;
+      const header = handle.closest('.fl-header');
+      const startX = e.clientX;
+      const startWidth = col === 'name'
+        ? header.firstElementChild.getBoundingClientRect().width
+        : header.children[1].getBoundingClientRect().width;
+
+      const onMove = (ev) => {
+        const delta = ev.clientX - startX;
+        const newWidth = Math.max(60, startWidth + delta);
+        colWidths[col] = newWidth + 'px';
+        const cols = getGridCols();
+        container.querySelector('.fl-header').style.gridTemplateColumns = cols;
+        container.querySelectorAll('.fl-row').forEach(r => r.style.gridTemplateColumns = cols);
+      };
+
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      };
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  });
+}
 
 const STYLES = `
     <style>
@@ -101,6 +138,27 @@ const STYLES = `
       .fl-header-size,
       .fl-header-date {
         text-align: left;
+      }
+      .fl-resize-handle {
+        position: absolute;
+        top: 4px;
+        right: 0;
+        width: 0;
+        height: calc(100% - 8px);
+        cursor: col-resize;
+        user-select: none;
+        z-index: 2;
+        padding-left: 6px;
+        border-left: 1px solid var(--fl-text-muted, #64748b);
+        opacity: 0.5;
+        transition: opacity 0.15s ease, border-color 0.15s ease;
+      }
+      .fl-resize-handle:hover {
+        opacity: 1;
+        border-left-color: var(--fl-link, #3b82f6);
+      }
+      .fl-header > div {
+        position: relative;
       }
 
       /* File row */
@@ -386,6 +444,7 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
 
     if (items.length === 0) {
       container.innerHTML = `
+        ${STYLES}
         <div class="fl-list">
           <div class="fl-empty">
             <svg class="fl-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -418,7 +477,7 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
         ? `<button class="fl-btn-dl" data-file-path="${esc(item.filename)}" aria-label="Download ${esc(item.basename)}">${dlIcon}</button>`
         : '';
 
-      return `<div class="${rowClass}">
+      return `<div class="${rowClass}" style="grid-template-columns: ${getGridCols()}">
         <div class="fl-name">
           <div class="fl-icon-wrap">${icon}</div>
           ${nameContent}
@@ -432,18 +491,21 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
     container.innerHTML = `
         ${STYLES}
       <div class="fl-list">
-          ${viewToggle}
-        <div class="fl-header">
-          <div>Name</div>
-          <div class="fl-header-size">Size</div>
+        ${viewToggle}
+        <div class="fl-header" style="grid-template-columns: ${getGridCols()}">
+          <div>Name<div class="fl-resize-handle" data-col="name"></div></div>
+          <div class="fl-header-size">Size<div class="fl-resize-handle" data-col="size"></div></div>
           <div class="fl-header-date">Modified</div>
           <div></div>
         </div>
         ${rows}
       </div>
-    `;
+    	`;
 
-    // Event delegation for directory clicks
+    // Column resize
+    initResize(container);
+
+    // View toggle events
     container.querySelectorAll('[data-dir-path]').forEach(el => {
       el.addEventListener('click', (e) => {
         e.preventDefault();
