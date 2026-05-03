@@ -115,7 +115,7 @@ function initResize(container) {
 }
 
 const STYLES = `
-    <style>
+  <style>
       .fl-list {
         padding: 0.25rem 0;
       }
@@ -159,6 +159,100 @@ const STYLES = `
       }
       .fl-header > div {
         position: relative;
+      }
+      /* Grid view */
+      .fl-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1rem;
+        padding: 0.5rem;
+      }
+      .fl-grid-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        border-radius: 10px;
+        background: var(--fl-hover, rgba(148,163,184,0.06));
+        border: 1px solid var(--fl-separator, rgba(148,163,184,0.1));
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease;
+        min-width: 0;
+      }
+      .fl-grid-item:hover {
+        background: var(--fl-hover-dir, rgba(59,130,246,0.08));
+        border-color: var(--fl-link, #3b82f6);
+      }
+      .fl-grid-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: var(--fl-icon-bg, rgba(148,163,184,0.08));
+      }
+      .fl-grid-icon svg {
+        width: 28px;
+        height: 28px;
+      }
+      .fl-grid-name {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--fl-text, #e2e8f0);
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+      }
+      .fl-grid-meta {
+        font-size: 0.7rem;
+        color: var(--fl-text-muted, #64748b);
+      }
+      .fl-grid-dl {
+        opacity: 0;
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: none;
+        border: none;
+        color: var(--fl-text-muted, #64748b);
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 6px;
+        transition: opacity 0.15s ease;
+      }
+      .fl-grid-item:hover .fl-grid-dl {
+        opacity: 1;
+      }
+      .fl-grid-item {
+        position: relative;
+      }
+      .fl-view-toggle {
+        display: flex;
+        gap: 0.25rem;
+        margin-left: auto;
+      }
+      .fl-view-btn {
+        background: none;
+        border: 1px solid var(--fl-separator, rgba(148,163,184,0.15));
+        color: var(--fl-text-muted, #64748b);
+        cursor: pointer;
+        padding: 0.3rem 0.5rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        transition: all 0.15s ease;
+      }
+      .fl-view-btn:hover {
+        border-color: var(--fl-link, #3b82f6);
+        color: var(--fl-link, #3b82f6);
+      }
+      .fl-view-btn.active {
+        background: var(--fl-link, #3b82f6);
+        border-color: var(--fl-link, #3b82f6);
+        color: #fff;
       }
 
       /* File row */
@@ -460,52 +554,94 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
     // Download icon SVG (arrow-down-to-line)
     const dlIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
 
-    // Build rows with escaped content
-    const rows = items.map(item => {
-      const icon = getFileIcon(item.type, item.basename);
-      const isDir = item.type === 'directory';
-      const rowClass = isDir ? 'fl-row fl-row-dir' : 'fl-row';
-
-      const nameContent = isDir
-        ? `<button class="fl-name-link" data-dir-path="${esc(item.filename)}">${esc(item.basename)}</button>`
-        : `<span class="fl-name-text">${esc(item.basename)}</span>`;
-
-      const size = item.type === 'file' ? formatSize(item.size) : '—';
-      const date = formatDate(item.lastmod);
-
-      const action = !isDir
-        ? `<button class="fl-btn-dl" data-file-path="${esc(item.filename)}" aria-label="Download ${esc(item.basename)}">${dlIcon}</button>`
-        : '';
-
-      return `<div class="${rowClass}" style="grid-template-columns: ${getGridCols()}">
-        <div class="fl-name">
-          <div class="fl-icon-wrap">${icon}</div>
-          ${nameContent}
-        </div>
-        <div class="fl-size">${esc(size)}</div>
-        <div class="fl-date">${esc(date)}</div>
-        <div class="fl-actions">${action}</div>
-      </div>`;
-    }).join('');
-
-    container.innerHTML = `
-        ${STYLES}
-      <div class="fl-list">
-        ${viewToggle}
-        <div class="fl-header" style="grid-template-columns: ${getGridCols()}">
-          <div>Name<div class="fl-resize-handle" data-col="name"></div></div>
-          <div class="fl-header-size">Size<div class="fl-resize-handle" data-col="size"></div></div>
-          <div class="fl-header-date">Modified</div>
-          <div></div>
-        </div>
-        ${rows}
+    const viewToggle = `
+      <div class="fl-view-toggle">
+        <button class="fl-view-btn${viewMode === 'list' ? ' active' : ''}" data-view="list" title="List view">☰</button>
+        <button class="fl-view-btn${viewMode === 'grid' ? ' active' : ''}" data-view="grid" title="Grid view">⊞</button>
       </div>
-    	`;
+    `;
 
+    if (viewMode === 'grid') {
+      // Grid view
+      const gridItems = items.map(item => {
+        const icon = getFileIcon(item.type, item.basename);
+        const isDir = item.type === 'directory';
+        const size = item.type === 'file' ? formatSize(item.size) : '';
+        const dlBtn = !isDir
+          ? `<button class="fl-grid-dl" data-file-path="${esc(item.filename)}" aria-label="Download ${esc(item.basename)}">${dlIcon}</button>`
+          : '';
+
+        return `<div class="fl-grid-item" ${isDir ? `data-dir-path="${esc(item.filename)}"` : ''}>
+          ${dlBtn}
+          <div class="fl-grid-icon">${icon}</div>
+          <div class="fl-grid-name" title="${esc(item.basename)}">${esc(item.basename)}</div>
+          ${size ? `<div class="fl-grid-meta">${esc(size)}</div>` : ''}
+        </div>`;
+      }).join('');
+
+      container.innerHTML = `
+        ${STYLES}
+        <div class="fl-list">
+          ${viewToggle}
+          <div class="fl-grid">${gridItems}</div>
+        </div>
+      `;
+    } else {
+      // List view
+      const rows = items.map(item => {
+        const icon = getFileIcon(item.type, item.basename);
+        const isDir = item.type === 'directory';
+        const rowClass = isDir ? 'fl-row fl-row-dir' : 'fl-row';
+
+        const nameContent = isDir
+          ? `<button class="fl-name-link" data-dir-path="${esc(item.filename)}">${esc(item.basename)}</button>`
+          : `<span class="fl-name-text">${esc(item.basename)}</span>`;
+
+        const size = item.type === 'file' ? formatSize(item.size) : '—';
+        const date = formatDate(item.lastmod);
+
+        const action = !isDir
+          ? `<button class="fl-btn-dl" data-file-path="${esc(item.filename)}" aria-label="Download ${esc(item.basename)}">${dlIcon}</button>`
+          : '';
+
+        return `<div class="${rowClass}" style="grid-template-columns: ${getGridCols()}">
+          <div class="fl-name">
+            <div class="fl-icon-wrap">${icon}</div>
+            ${nameContent}
+          </div>
+          <div class="fl-size">${esc(size)}</div>
+          <div class="fl-date">${esc(date)}</div>
+          <div class="fl-actions">${action}</div>
+        </div>`;
+      }).join('');
+
+      container.innerHTML = `
+        ${STYLES}
+        <div class="fl-list">
+          ${viewToggle}
+          <div class="fl-header" style="grid-template-columns: ${getGridCols()}">
+            <div>Name<div class="fl-resize-handle" data-col="name"></div></div>
+            <div class="fl-header-size">Size<div class="fl-resize-handle" data-col="size"></div></div>
+            <div class="fl-header-date">Modified</div>
+            <div></div>
+          </div>
+          ${rows}
+        </div>
+      `;
+    }
+  
     // Column resize
     initResize(container);
 
     // View toggle events
+    container.querySelectorAll('[data-view]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        viewMode = btn.dataset.view;
+        renderFileList(container, path, searchQuery);
+      });
+    });
+
+    // Directory click events
     container.querySelectorAll('[data-dir-path]').forEach(el => {
       el.addEventListener('click', (e) => {
         e.preventDefault();
@@ -513,7 +649,7 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
       });
     });
 
-    // Event delegation for download clicks
+    // Download click events
     container.querySelectorAll('[data-file-path]').forEach(el => {
       el.addEventListener('click', () => downloadFile(el.dataset.filePath));
     });

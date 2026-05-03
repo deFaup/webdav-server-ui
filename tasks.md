@@ -79,11 +79,11 @@
   - Complexity: hard
   - Status: done
 
-- [ ] **12. Implement card view**
+- [x] **12. Implement card view**
   - Description: Card/grid layout with thumbnail previews for images. Toggle between list and grid views.
   - Dependencies: 10
   - Complexity: small
-  - Status: pending
+  - Status: done
 
 - [ ] **13. Download button per file**
   - Description: Add download action to each file row/card. Triggers download from task 8.
