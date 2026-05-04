@@ -37,4 +37,13 @@
 }
 .fl-header > div {
   position: relative;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+  /* Each header cell gets internal padding and a rounded border-radius so the hover highlight doesn't look like a sharp rectangle */
+  /* On hover, a semi-transparent gray background fades in over 150ms */
+}
+
+.fl-header > div:hover {
+  background: var(--fl-header-hover, rgba(148, 163, 184, 0.12));
 }
