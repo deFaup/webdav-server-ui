@@ -1,0 +1,28 @@
+/* Icon Styles */
+.fl-icon-wrap {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--fl-icon-bg, rgba(148,163,184,0.08));
+  transition: background 0.15s ease;
+}
+.fl-row-dir:hover .fl-icon-wrap {
+  background: var(--fl-icon-bg-dir, rgba(59,130,246,0.12));
+}
+.fl-icon-svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.fl-icon-dir { color: var(--fl-icon-dir, #3b82f6); }
+.fl-icon-image { color: var(--fl-icon-image, #8b5cf6); }
+.fl-icon-video { color: var(--fl-icon-video, #ef4444); }
+.fl-icon-audio { color: var(--fl-icon-audio, #f59e0b); }
+.fl-icon-archive { color: var(--fl-icon-archive, #6366f1); }
+.fl-icon-code { color: var(--fl-icon-code, #10b981); }
+.fl-icon-pdf { color: var(--fl-icon-pdf, #ef4444); }
+.fl-icon-file { color: var(--fl-icon-file, #94a3b8); }

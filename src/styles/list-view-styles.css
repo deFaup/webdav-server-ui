@@ -1,0 +1,68 @@
+/* List View Rows Styles */
+.fl-row {
+  display: grid;
+  grid-template-columns: 1fr 120px 180px 48px;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  margin: 0 0.5rem;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+  border-bottom: 1px solid var(--fl-separator, rgba(148,163,184,0.08));
+  position: relative;
+}
+.fl-row:last-child {
+  border-bottom: none;
+}
+.fl-row:hover {
+  background: var(--fl-hover, rgba(148,163,184,0.08));
+}
+.fl-row-dir {
+  cursor: pointer;
+}
+.fl-row-dir:hover {
+  background: var(--fl-hover-dir, rgba(59,130,246,0.08));
+}
+.fl-row-dir:active {
+  background: var(--fl-active-dir, rgba(59,130,246,0.14));
+}
+.fl-name {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  overflow: hidden;
+}
+.fl-name-link {
+  color: var(--fl-text, #e2e8f0);
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font: inherit;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fl-name-link:hover {
+  color: var(--fl-link, #3b82f6);
+}
+.fl-name-text {
+  color: var(--fl-text, #e2e8f0);
+  font-size: 0.875rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fl-size,
+.fl-date {
+  text-align: left;
+  font-size: 0.8rem;
+  color: var(--fl-text-secondary, #94a3b8);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}

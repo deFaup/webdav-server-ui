@@ -1,0 +1,70 @@
+/* Grid View Styles */
+.fl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  padding: 0.5rem;
+}
+.fl-grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background: var(--fl-hover, rgba(148,163,184,0.06));
+  border: 1px solid var(--fl-separator, rgba(148,163,184,0.1));
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  min-width: 0;
+}
+.fl-grid-item:hover {
+  background: var(--fl-hover-dir, rgba(59,130,246,0.08));
+  border-color: var(--fl-link, #3b82f6);
+}
+.fl-grid-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--fl-icon-bg, rgba(148,163,184,0.08));
+}
+.fl-grid-icon svg {
+  width: 28px;
+  height: 28px;
+}
+.fl-grid-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--fl-text, #e2e8f0);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+.fl-grid-meta {
+  font-size: 0.7rem;
+  color: var(--fl-text-muted, #64748b);
+}
+.fl-grid-dl {
+  opacity: 0;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--fl-text-muted, #64748b);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 6px;
+  transition: opacity 0.15s ease;
+}
+.fl-grid-item:hover .fl-grid-dl {
+  opacity: 1;
+}
+.fl-grid-item {
+  position: relative;
+}

@@ -1,0 +1,62 @@
+/* Action Buttons & View Toggle Styles */
+.fl-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.fl-btn-dl {
+  opacity: 0;
+  background: none;
+  border: none;
+  color: var(--fl-text-muted, #64748b);
+  cursor: pointer;
+  padding: 0.35rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.fl-row:hover .fl-btn-dl {
+  opacity: 1;
+}
+
+.fl-btn-dl:hover {
+  color: var(--fl-link, #3b82f6);
+  background: var(--fl-hover, rgba(148, 163, 184, 0.12));
+}
+
+.fl-btn-dl svg {
+  width: 18px;
+  height: 18px;
+}
+
+.fl-view-toggle {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.fl-view-btn {
+  background: none;
+  border: 1px solid var(--fl-separator, rgba(148, 163, 184, 0.15));
+  color: var(--fl-text-muted, #64748b);
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  transition: all 0.15s ease;
+}
+
+.fl-view-btn:hover {
+  border-color: var(--fl-link, #3b82f6);
+  color: var(--fl-link, #3b82f6);
+}
+
+.fl-view-btn.active {
+  background: var(--fl-link, #3b82f6);
+  border-color: var(--fl-link, #3b82f6);
+  color: #fff;
+}
