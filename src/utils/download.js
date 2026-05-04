@@ -8,7 +8,7 @@ function requireClient() {
 
 export async function downloadFile(path) {
   const client = requireClient();
-  const response = await client.getFileContents(path, { format: 'arraybuffer' });
+  const response = await client.getFileContents(path);
   const blob = new Blob([response]);
   const url = URL.createObjectURL(blob);
   const filename = path.split('/').filter(Boolean).pop();

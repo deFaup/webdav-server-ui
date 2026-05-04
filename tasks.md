@@ -85,11 +85,11 @@
   - Complexity: small
   - Status: done
 
-- [ ] **13. Download button per file**
+- [x] **13. Download button per file**
   - Description: Add download action to each file row/card. Triggers download from task 8.
   - Dependencies: 8, 10
   - Complexity: small
-  - Status: pending
+  - Status: done
 
 ---
 
