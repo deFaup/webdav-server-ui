@@ -1,13 +1,8 @@
 import { getClient } from './webdav-client.js';
-
-function requireClient() {
-  const client = getClient();
-  if (!client) throw new Error('Not connected. Log in first.');
-  return client;
-}
+import { isFileText } from './file-ops.js';
 
 export async function downloadFile(path) {
-  const client = requireClient();
+  const client = getClient();
   const response = await client.getFileContents(path);
   const blob = new Blob([response]);
   const url = URL.createObjectURL(blob);

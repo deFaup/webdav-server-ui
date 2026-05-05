@@ -3,6 +3,7 @@ import { createClient } from 'webdav';
 let client = null;
 
 export function getClient() {
+  if (!client) throw new Error('Not connected. Log in first.');
   return client;
 }
 
