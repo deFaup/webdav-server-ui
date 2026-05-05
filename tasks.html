@@ -127,7 +127,7 @@
 
 <script>
 const TASKS = {
-  lastUpdated: "2026-05-01",
+  lastUpdated: "2026-05-04",
   phases: [
     {
       name: "Phase 1: Project Setup",
@@ -160,7 +160,7 @@ const TASKS = {
     {
       name: "Phase 4: Upload",
       tasks: [
-        { id: 14, name: "Basic upload", desc: "File picker button, drag-and-drop zone. Upload via WebDAV PUT. Progress bar per file.", deps: [7], complexity: "medium", status: "pending" },
+        { id: 14, name: "Basic upload", desc: "File picker button, drag-and-drop zone. Upload via WebDAV PUT. Progress bar per file.", deps: [7], complexity: "medium", status: "done" },
         { id: 15, name: "Chunked upload", desc: "Files >50MB: split into chunks, sequential PUT per chunk. Track overall progress. Configurable chunk size.", deps: [14], complexity: "large", status: "pending" }
       ]
     },

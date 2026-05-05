@@ -1,6 +1,6 @@
 # WebDAV File Sharing UI — Task List
 
-> Last updated: 2026-05-01
+> Last updated: 2026-05-04
 
 ---
 
@@ -95,11 +95,11 @@
 
 ## Phase 4: Upload
 
-- [ ] **14. Basic upload**
+- [x] **14. Basic upload**
   - Description: File picker button, drag-and-drop zone. Upload via WebDAV PUT. Show progress bar per file.
   - Dependencies: 7
   - Complexity: medium
-  - Status: pending
+  - Status: done
 
 - [ ] **15. Chunked upload**
   - Description: For files >50MB: split into chunks, sequential PUT per chunk. Track overall progress. Configurable chunk size.
