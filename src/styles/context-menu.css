@@ -1,0 +1,60 @@
+/* Context Menu Styles */
+
+/* Theme-aware context menu variables */
+@media (prefers-color-scheme: light) {
+  .fl-context-menu,
+  .fl-context-item {
+    --cm-text: #1e293b;
+    --cm-surface: #f8fafc;
+    --cm-separator: rgba(148,163,184,0.15);
+    --cm-hover: rgba(37,99,235,0.08);
+    --cm-link: #2563eb;
+    --cm-shadow: rgba(15,23,42,0.15);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .fl-context-menu,
+  .fl-context-item {
+    --cm-text: #e2e8f0;
+    --cm-surface: #1e293b;
+    --cm-separator: rgba(148,163,184,0.12);
+    --cm-hover: rgba(59,130,246,0.12);
+    --cm-link: #3b82f6;
+    --cm-shadow: rgba(15,23,42,0.45);
+  }
+}
+
+.fl-context-menu {
+  position: fixed;
+  z-index: 50;
+  min-width: 170px;
+  padding: 0.35rem;
+  background: var(--cm-surface);
+  border: 1px solid var(--cm-separator);
+  border-radius: 10px;
+  box-shadow: 0 16px 40px var(--cm-shadow);
+}
+
+.fl-context-item {
+  display: block;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--cm-text);
+  text-align: left;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.fl-context-item:hover:not(:disabled) {
+  background: var(--cm-hover);
+}
+
+.fl-context-item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

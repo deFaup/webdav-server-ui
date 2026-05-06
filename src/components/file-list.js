@@ -9,6 +9,7 @@ import '../styles/list-view-styles.css';
 import '../styles/icon-styles.css';
 import '../styles/action-styles.css';
 import '../styles/state-styles.css';
+import '../styles/context-menu.css';
 
 // Escape HTML to prevent XSS from server-sourced filenames
 function esc(str) {
@@ -84,6 +85,9 @@ function getFileIcon(type, name) {
 
 let viewMode = 'list'; // 'list' | 'grid'
 let colWidths = { name: '1fr', size: '120px' };
+let activeItemPath = null;
+let contextMenuState = { open: false, x: 0, y: 0, item: null };
+let lastRenderedPath = null;
 
 function getGridCols() {
   return `${colWidths.name} ${colWidths.size} 1fr 48px`;
@@ -121,7 +125,66 @@ function initResize(container) {
   });
 }
 
+function syncSelection(container, rootEl) {
+  // remove current active
+  container.querySelectorAll('.fl-row.fl-row-active, .fl-grid-item.fl-grid-item-active').forEach(el => {
+    el.classList.contains('fl-row') ? 
+      el.classList.toggle('fl-row-active') : el.classList.toggle('fl-grid-item-active');
+  });
+
+  if (!rootEl) return;
+
+  if (rootEl.classList.contains('fl-row')) {
+    rootEl.classList.toggle('fl-row-active');
+  } else if (rootEl.classList.contains('fl-grid-item')) {
+    rootEl.classList.toggle('fl-grid-item-active'); //could set the second param as, path === activeItemPath
+  }
+}
+
+function closeContextMenu(container) {
+  contextMenuState = { open: false, x: 0, y: 0, item: null };
+  container.querySelector('.fl-context-menu')?.remove();
+}
+
+function renderContextMenu(container) {
+  container.querySelector('.fl-context-menu')?.remove();
+
+  if (!contextMenuState.open || !contextMenuState.item) return;
+
+  const item = contextMenuState.item;
+  const isDir = item.type === 'directory';
+
+  const menu = document.createElement('div');
+  menu.className = 'fl-context-menu';
+  menu.style.left = `${contextMenuState.x}px`;
+  menu.style.top = `${contextMenuState.y}px`;
+  menu.innerHTML = `
+    <button class="fl-context-item" data-action="preview" ${isDir ? 'disabled' : ''}>Preview</button>
+    <button class="fl-context-item" data-action="download" ${isDir ? 'disabled' : ''}>Download</button>
+    <button class="fl-context-item" data-action="move" disabled>Move</button>
+    <button class="fl-context-item" data-action="delete" disabled>Delete</button>
+  `;
+
+  menu.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const action = btn.dataset.action;
+      if (action === 'download') {
+        downloadFile(item.filename);
+      }
+      closeContextMenu(container);
+    });
+  });
+
+  container.appendChild(menu);
+}
+
 export async function renderFileList(container, path = '/', searchQuery = '') {
+  if (path !== lastRenderedPath) {
+    activeItemPath = null;
+    lastRenderedPath = path;
+  }
+
   container.innerHTML = `
     <div class="fl-list">
       <div class="fl-loading">
@@ -173,15 +236,27 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
         const icon = getFileIcon(item.type, item.basename);
         const isDir = item.type === 'directory';
         const size = item.type === 'file' ? formatSize(item.size) : '';
+        // TODO - get/calculate size of directories (for now it returns 0)
+
+        const cardClass = [
+          'fl-grid-item',
+          isDir ? 'fl-grid-item-dir' : '',
+          activeItemPath === item.filename ? 'fl-grid-item-active' : ''
+        ].filter(Boolean).join(' ');
+
+        // TODO - this does not render in grid but works in list view
         const dlBtn = !isDir
           ? `<button class="fl-grid-dl" data-file-path="${esc(item.filename)}" aria-label="Download ${esc(item.basename)}">${dlIcon}</button>`
           : '';
+        
+        // data-dir-path added at root level of card/grid makes it navigeable
+        const includeDirPathForNavigation = isDir ? `data-dir-path="${esc(item.filename)}"` : ''
 
-        return `<div class="fl-grid-item" ${isDir ? `data-dir-path="${esc(item.filename)}"` : ''}>
+        return `<div class="${cardClass}" ${includeDirPathForNavigation}>
           ${dlBtn}
           <div class="fl-grid-icon">${icon}</div>
           <div class="fl-grid-name" title="${esc(item.basename)}">${esc(item.basename)}</div>
-          ${size ? `<div class="fl-grid-meta">${esc(size)}</div>` : ''}
+          ${size ? `<div class="fl-grid-size">${esc(size)}</div>` : ''}
         </div>`;
       }).join('');
 
@@ -196,7 +271,11 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
       const rows = items.map(item => {
         const icon = getFileIcon(item.type, item.basename);
         const isDir = item.type === 'directory';
-        const rowClass = isDir ? 'fl-row fl-row-dir' : 'fl-row';
+        const rowClass = [
+          'fl-row',
+          isDir ? 'fl-row-dir' : '',
+          activeItemPath === item.filename ? 'fl-row-active' : ''
+        ].filter(Boolean).join(' ');
 
         const nameContent = isDir
           ? `<button class="fl-name-link" data-dir-path="${esc(item.filename)}">${esc(item.basename)}</button>`
@@ -237,6 +316,18 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
     // Column resize
     initResize(container);
 
+    // Close menu when clicking empty space
+    container.addEventListener('click', (e) => {
+      if (contextMenuState.open && !e.target.closest('.fl-context-menu')) {
+        closeContextMenu(container);
+      }
+      // clicking empty space remove highlight (no action if no element active OR if no row/card close by)
+      if (activeItemPath && !e.target.closest('.fl-row, .fl-grid-item')) {
+        activeItemPath = ''
+        syncSelection(container, null)
+      }
+    });
+
     // View toggle events
     container.querySelectorAll('[data-view]').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -245,19 +336,50 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
       });
     });
 
-    // Directory click events
-    container.querySelectorAll('[data-dir-path]').forEach(el => {
+    // Directory / file click events
+    container.querySelectorAll('[data-dir-path], [data-file-path]').forEach(el => {
+      // data-dir-path or data-file-path respectively have either dataset.dirPath or dataset.filePath.
+      // those dataset props are the one set after the class def for any elem
+      const row = el.closest('.fl-row, .fl-grid-item');
+      const itemPath = el.dataset.dirPath || el.dataset.filePath;
+      const isDir = !!el.dataset.dirPath;
+      const itemLabel = row?.querySelector('.fl-name-text, .fl-grid-name, .fl-name-link')?.textContent?.trim() || (itemPath ? itemPath.split('/').pop() : '');
+
+      // navigate to next dir and dl for elements that dir buttons or dl buttons
       el.addEventListener('click', (e) => {
         e.preventDefault();
-        setCurrentPath(el.dataset.dirPath);
+        e.stopPropagation();
+        activeItemPath = itemPath; //aka el.dataset.filePath
+        if (isDir) {
+          setCurrentPath(itemPath);
+        } else {
+          downloadFile(itemPath);
+        }
       });
-    });
 
-    // Download click events
-    container.querySelectorAll('[data-file-path]').forEach(el => {
-      el.addEventListener('click', () => downloadFile(el.dataset.filePath));
-    });
+      if (row) {
+        row.addEventListener('click', (e) => { // could also be 'pointerdown'
+          if (e.target.closest('.fl-actions, .fl-btn-dl, .fl-grid-dl, .fl-context-menu, .fl-name-link')) return;
+          if (e.button !== 0) return;
+          activeItemPath = itemPath;
+          syncSelection(container, row);
+        });
 
+        row.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          activeItemPath = itemPath;
+          contextMenuState = {
+            open: true,
+            x: e.clientX,
+            y: e.clientY,
+            item: { filename: itemPath, basename: itemLabel, type: isDir ? 'directory' : 'file' }
+          };
+          syncSelection(container);
+          renderContextMenu(container);
+        });
+      }
+    });
   } catch (err) {
     container.innerHTML = `
       <div class="fl-list">

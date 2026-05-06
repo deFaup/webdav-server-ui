@@ -16,6 +16,9 @@
 .fl-row:hover {
   background: var(--fl-hover, rgba(148,163,184,0.08));
 }
+.fl-row-active {
+  background: rgba(59,130,246,0.22) !important;
+}
 .fl-row-dir {
   cursor: pointer;
 }
