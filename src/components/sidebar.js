@@ -84,8 +84,11 @@ export function renderSidebar(container) {
       }
     </style>
     <div class="sb">
+      <div style="padding:0.75rem 0 0.75rem;">
+        <button class="sb-add-btn" id="sb-add-file">+ Add</button>
+      </div>
       <div class="sb-content" id="sb-content"></div>
-      <div class="sb-add">
+      <div class="sb-add" style="margin-top:0.75rem;">
         <button class="sb-add-btn" id="sb-add-server">+ Add Server</button>
       </div>
       <div class="sb-resize" id="sb-resize"></div>
@@ -262,5 +265,30 @@ export function setupSidebarEvents(sidebarEl, { onNavigate }) {
       onNavigate(dirPath);
       return;
     }
+  });
+}
+
+export function attachSidebarUploadHandler(container, fn) {
+  const addFileButton = document.getElementById('sb-add-file')
+  // const addFileButton = sidebarEl.querySelector('#sb-add-file'); // this works too
+  if (!addFileButton) return;
+
+  addFileButton.addEventListener('click', () => {
+    const existing = container.querySelector('#upload-picker');
+    if (existing) existing.remove();
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.id = 'upload-picker';
+    input.style.display = 'none';
+    input.addEventListener('change', async () => {
+      const files = Array.from(input.files || []);
+      input.remove();
+      if (!files.length) return;
+      await fn(files);
+    });
+    container.appendChild(input);
+    input.click();
   });
 }

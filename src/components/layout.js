@@ -5,6 +5,7 @@ import { renderSidebar, setupSidebarEvents, clearDirCache } from './sidebar.js';
 import { renderBreadcrumb } from './breadcrumb.js';
 import { renderFileList } from './file-list.js';
 import { uploadFile } from '../utils/upload.js';
+import { attachSidebarUploadHandler} from './sidebar.js';
 
 export function renderLayout(container) {
   container.innerHTML = `
@@ -166,26 +167,8 @@ export function renderLayout(container) {
   }
 
   // Header
-  renderHeader(headerEl, {
-    onAddFile: () => {
-      const existing = container.querySelector('#upload-picker');
-      if (existing) existing.remove();
+  renderHeader(headerEl);
 
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.multiple = true;
-      input.id = 'upload-picker';
-      input.style.display = 'none';
-      input.addEventListener('change', async () => {
-        const files = Array.from(input.files || []);
-        input.remove();
-        if (!files.length) return;
-        await handleUpload(files);
-      });
-      container.appendChild(input);
-      input.click();
-    }
-  });
 
   // Logout button
   document.getElementById('logout-btn').addEventListener('click', () => {
@@ -197,6 +180,7 @@ export function renderLayout(container) {
   // Sidebar — initial render
   renderSidebar(sidebarEl);
   setupSidebarEvents(sidebarEl, { onNavigate: navigateTo });
+  attachSidebarUploadHandler(sidebarEl, handleUpload);
 
   // Initial content
   refreshContent();

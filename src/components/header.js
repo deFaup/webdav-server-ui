@@ -1,6 +1,6 @@
 import { setSearchQuery, setSidebarOpen, getState } from '../utils/state.js';
 
-export function renderHeader(container, { onAddFile }) {
+export function renderHeader(container) {
   container.innerHTML = `
     <style>
       .header { display: flex; align-items: center; gap: 0.75rem; height: 52px; padding: 0 1rem; background: var(--surface, #1e293b); border-bottom: 1px solid var(--border, #334155); flex-shrink: 0; }
@@ -31,7 +31,6 @@ export function renderHeader(container, { onAddFile }) {
     <div class="header">
       <button class="header-toggle" id="sidebar-toggle" title="Toggle sidebar">☰</button>
       <span class="header-logo">WebDAV</span>
-      <button class="header-btn" id="add-file-btn">+ Add File</button>
       <div class="header-search">
         <input type="text" id="search-input" placeholder="Search files...">
       </div>
@@ -45,8 +44,6 @@ export function renderHeader(container, { onAddFile }) {
     const state = getState();
     setSidebarOpen(!state.sidebarOpen);
   });
-
-  document.getElementById('add-file-btn').addEventListener('click', onAddFile);
 
   document.getElementById('search-input').addEventListener('input', (e) => {
     setSearchQuery(e.target.value.trim());
