@@ -1,4 +1,4 @@
-import { listDirectory } from '../utils/file-ops.js';
+import { listDirectory, deleteItem } from '../utils/file-ops.js';
 import { downloadFile } from '../utils/download.js';
 import { setCurrentPath } from '../utils/state.js';
 import { filterItems } from './search.js';
@@ -162,15 +162,27 @@ function renderContextMenu(container) {
     <button class="fl-context-item" data-action="preview" ${isDir ? 'disabled' : ''}>Preview</button>
     <button class="fl-context-item" data-action="download" ${isDir ? 'disabled' : ''}>Download</button>
     <button class="fl-context-item" data-action="move" disabled>Move</button>
-    <button class="fl-context-item" data-action="delete" disabled>Delete</button>
+    <button class="fl-context-item" data-action="delete">Delete</button>
   `;
 
   menu.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const action = btn.dataset.action;
+
       if (action === 'download') {
         downloadFile(item.filename);
+      } else if (action === 'delete') {
+        if (confirm(`Are you sure you want to delete "${item.basename}"? This action cannot be undone.`)) {
+          if (isDir) item.filename += '/'; // ensure directories end with slash for deletion
+          deleteItem(item.filename).then(() => {
+            // After deletion, refresh the file list
+            console.log("call setCurrentPath")
+            setCurrentPath(lastRenderedPath);
+          }).catch(err => {
+            alert(`Failed to delete: ${err.message}`);
+          });
+        }
       }
       closeContextMenu(container);
     });
