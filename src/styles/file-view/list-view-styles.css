@@ -10,24 +10,31 @@
   border-bottom: 1px solid var(--fl-separator, rgba(148,163,184,0.08));
   position: relative;
 }
+
 .fl-row:last-child {
   border-bottom: none;
 }
+
 .fl-row:hover {
-  background: var(--fl-hover, rgba(148,163,184,0.08));
+  background: var(--fl-hover, rgba(148, 163, 184, 0.08));
 }
+
 .fl-row-active {
-  background: rgba(59,130,246,0.22) !important;
+  background: rgba(59, 130, 246, 0.22) !important;
 }
+
 .fl-row-dir {
   cursor: pointer;
 }
+
 .fl-row-dir:hover {
-  background: var(--fl-hover-dir, rgba(59,130,246,0.08));
+  background: var(--fl-hover-dir, rgba(59, 130, 246, 0.08));
 }
+
 .fl-row-dir:active {
-  background: var(--fl-active-dir, rgba(59,130,246,0.14));
+  background: var(--fl-active-dir, rgba(59, 130, 246, 0.14));
 }
+
 .fl-name {
   display: flex;
   align-items: center;
@@ -35,6 +42,7 @@
   min-width: 0;
   overflow: hidden;
 }
+
 .fl-name-link {
   color: var(--fl-text, #e2e8f0);
   text-decoration: none;
@@ -50,9 +58,11 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .fl-name-link:hover {
   color: var(--fl-link, #3b82f6);
 }
+
 .fl-name-text {
   color: var(--fl-text, #e2e8f0);
   font-size: 0.875rem;
@@ -61,6 +71,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .fl-size,
 .fl-date {
   text-align: left;

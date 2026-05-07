@@ -2,14 +2,14 @@ import { listDirectory, deleteItem } from '../utils/file-ops.js';
 import { downloadFile } from '../utils/download.js';
 import { setCurrentPath } from '../utils/state.js';
 import { filterItems } from './search.js';
-import '../styles/base-styles.css';
-import '../styles/header-styles.css';
-import '../styles/grid-view-styles.css';
-import '../styles/list-view-styles.css';
-import '../styles/icon-styles.css';
-import '../styles/action-styles.css';
-import '../styles/state-styles.css';
-import '../styles/context-menu.css';
+import '../styles/file-view/base-styles.css';
+import '../styles/file-view/list-header-styles.css';
+import '../styles/file-view/grid-view-styles.css';
+import '../styles/file-view/list-view-styles.css';
+import '../styles/file-view/icon-styles.css';
+import '../styles/file-view/action-styles.css';
+import '../styles/file-view/state-styles.css';
+import '../styles/file-view/context-menu.css';
 
 // Escape HTML to prevent XSS from server-sourced filenames
 function esc(str) {
