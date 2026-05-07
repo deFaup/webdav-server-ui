@@ -1,33 +1,8 @@
 import { setSearchQuery, setSidebarOpen, getState } from '../utils/state.js';
+import '../styles/header-styles.css';
 
 export function renderHeader(container) {
   container.innerHTML = `
-    <style>
-      .header { display: flex; align-items: center; gap: 0.75rem; height: 52px; padding: 0 1rem; background: var(--surface, #1e293b); border-bottom: 1px solid var(--border, #334155); flex-shrink: 0; }
-      .header-logo { font-weight: 700; font-size: 1rem; color: var(--text, #e2e8f0); white-space: nowrap; }
-      .header-toggle { background: none; border: none; color: var(--text-muted, #64748b); cursor: pointer; font-size: 1.2rem; padding: 0.25rem; }
-      .header-toggle:hover { color: var(--text, #e2e8f0); }
-      .header-btn { background: var(--accent, #3b82f6); color: #fff; border: none; padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
-      .header-btn:hover { background: var(--accent-hover, #2563eb); }
-      .header-search { flex: 1; max-width: 400px; }
-      .header-search input { width: 100%; padding: 0.4rem 0.75rem; background: var(--bg, #0f172a); border: 1px solid var(--border, #334155); border-radius: 6px; color: var(--text, #e2e8f0); font-size: 0.8rem; }
-      .header-search input::placeholder { color: var(--text-muted, #64748b); }
-      .header-search input:focus { outline: none; border-color: var(--accent, #3b82f6); }
-      .header-right { margin-left: auto; display: flex; align-items: center; gap: 0.5rem; }
-      .header-logout { background: none; border: 1px solid var(--border, #334155); color: var(--text-secondary, #94a3b8); padding: 0.35rem 0.7rem; border-radius: 6px; font-size: 0.75rem; cursor: pointer; }
-      .header-logout:hover { border-color: #f87171; color: #f87171; }
-
-      @media (prefers-color-scheme: light) {
-        .header { background: #ffffff; border-bottom-color: #e2e8f0; }
-        .header-logo { color: #1e293b; }
-        .header-toggle { color: #64748b; }
-        .header-toggle:hover { color: #1e293b; }
-        .header-search input { background: #f8fafc; border-color: #e2e8f0; color: #1e293b; }
-        .header-search input::placeholder { color: #94a3b8; }
-        .header-logout { color: #475569; border-color: #cbd5e1; }
-        .header-logout:hover { border-color: #dc2626; color: #dc2626; }
-      }
-    </style>
     <div class="header">
       <button class="header-toggle" id="sidebar-toggle" title="Toggle sidebar">☰</button>
       <span class="header-logo">WebDAV</span>
