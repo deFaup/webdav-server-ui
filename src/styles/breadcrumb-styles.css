@@ -1,0 +1,79 @@
+.bc {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  color: var(--bc-text, #94a3b8);
+  background: var(--bc-bg, #0f172a);
+  border: 1px solid var(--bc-border, #334155);
+  border-radius: 6px;
+  flex-shrink: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  max-width: 60%;
+  margin-top: 0.5rem;
+}
+
+.bc-seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  cursor: pointer;
+  color: var(--bc-link, #3b82f6);
+  text-decoration: none;
+  padding: 0.15rem 0.3rem;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.bc-seg:hover {
+  background: var(--bc-hover, rgba(59, 130, 246, 0.1));
+  text-decoration: none;
+}
+
+.bc-seg.current {
+  color: var(--bc-text-strong, #e2e8f0);
+  font-weight: 600;
+  cursor: default;
+}
+
+.bc-seg.current:hover {
+  background: transparent;
+}
+
+.bc-sep {
+  color: var(--bc-sep, #475569);
+  margin: 0 0.1rem;
+  font-size: 0.75rem;
+}
+
+.bc-home-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+@media (prefers-color-scheme: light) {
+  .bc {
+    --bc-text: #475569;
+    --bc-border: #e2e8f0;
+    --bc-bg: #f8fafc;
+    --bc-link: #2563eb;
+    --bc-hover: rgba(37, 99, 235, 0.08);
+    --bc-text-strong: #1e293b;
+    --bc-sep: #94a3b8;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .bc {
+    --bc-text: #94a3b8;
+    --bc-border: #334155;
+    --bc-bg: #0f172a;
+    --bc-link: #3b82f6;
+    --bc-hover: rgba(59, 130, 246, 0.1);
+    --bc-text-strong: #e2e8f0;
+    --bc-sep: #475569;
+  }
+}
