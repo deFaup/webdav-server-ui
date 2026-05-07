@@ -330,7 +330,8 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
 
     // View toggle events
     container.querySelectorAll('[data-view]').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         viewMode = btn.dataset.view;
         renderFileList(container, path, searchQuery);
       });
@@ -359,6 +360,7 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
 
       if (row) {
         row.addEventListener('click', (e) => { // could also be 'pointerdown'
+          e.stopPropagation();
           if (e.target.closest('.fl-actions, .fl-btn-dl, .fl-grid-dl, .fl-context-menu, .fl-name-link')) return;
           if (e.button !== 0) return;
           activeItemPath = itemPath;
@@ -375,7 +377,7 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
             y: e.clientY,
             item: { filename: itemPath, basename: itemLabel, type: isDir ? 'directory' : 'file' }
           };
-          syncSelection(container);
+          syncSelection(container, row);
           renderContextMenu(container);
         });
       }
