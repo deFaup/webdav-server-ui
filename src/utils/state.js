@@ -4,6 +4,7 @@ let servers = [];
 let sidebarOpen = true;
 let sidebarWidth = 240;
 let searchQuery = '';
+let viewMode = 'list';
 
 // Version counter tracks changes to the servers list specifically.
 // layout.js uses this to decide whether to re-render the sidebar.
@@ -12,7 +13,7 @@ let serversVersion = 0;
 const listeners = [];
 
 export function getState() {
-  return { currentPath, currentServer, servers, sidebarOpen, sidebarWidth, searchQuery, serversVersion };
+  return { currentPath, viewMode, currentServer, servers, sidebarOpen, sidebarWidth, searchQuery, serversVersion };
 }
 
 export function getServersVersion() {
@@ -22,6 +23,10 @@ export function getServersVersion() {
 export function setCurrentPath(path) {
   currentPath = path;
   notify();
+}
+
+export function toggleViewMode() {
+  viewMode = viewMode === 'list' ? 'grid' : 'list';
 }
 
 export function setCurrentServer(server) {

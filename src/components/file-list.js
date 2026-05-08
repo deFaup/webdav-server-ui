@@ -83,7 +83,6 @@ function getFileIcon(type, name) {
   </svg>`;
 }
 
-let viewMode = 'list'; // 'list' | 'grid'
 let colWidths = { name: '1fr', size: '120px' };
 let activeItemPath = null;
 let contextMenuState = { open: false, x: 0, y: 0, item: null };
@@ -191,7 +190,7 @@ function renderContextMenu(container) {
   container.appendChild(menu);
 }
 
-export async function renderFileList(container, path = '/', searchQuery = '') {
+export async function renderFileList(container, viewMode, path = '/', searchQuery = '') {
   if (path !== lastRenderedPath) {
     activeItemPath = null;
     lastRenderedPath = path;
@@ -235,13 +234,6 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
     // Download icon SVG (arrow-down-to-line)
     const dlIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
 
-    const viewToggle = `
-      <div class="fl-view-toggle">
-        <button class="fl-view-btn${viewMode === 'list' ? ' active' : ''}" data-view="list" title="List view">☰</button>
-        <button class="fl-view-btn${viewMode === 'grid' ? ' active' : ''}" data-view="grid" title="Grid view">⊞</button>
-      </div>
-    `;
-
     if (viewMode === 'grid') {
       // Grid view
       const gridItems = items.map(item => {
@@ -274,7 +266,6 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
 
       container.innerHTML = `
         <div class="fl-list">
-          ${viewToggle}
           <div class="fl-grid">${gridItems}</div>
         </div>
       `;
@@ -313,7 +304,6 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
 
       container.innerHTML = `
         <div class="fl-list">
-          ${viewToggle}
           <div class="fl-header" style="grid-template-columns: ${getGridCols()}">
             <div>Name<div class="fl-resize-handle" data-col="name"></div></div>
             <div class="fl-header-size">Size<div class="fl-resize-handle" data-col="size"></div></div>
@@ -338,15 +328,6 @@ export async function renderFileList(container, path = '/', searchQuery = '') {
         activeItemPath = ''
         syncSelection(container, null)
       }
-    });
-
-    // View toggle events
-    container.querySelectorAll('[data-view]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        viewMode = btn.dataset.view;
-        renderFileList(container, path, searchQuery);
-      });
     });
 
     // Directory / file click events

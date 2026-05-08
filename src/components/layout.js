@@ -1,11 +1,10 @@
 import { getState, subscribe, getServersVersion, setCurrentPath } from '../utils/state.js';
 import { logout } from '../utils/auth.js';
 import { renderHeader } from './header.js';
-import { renderSidebar, setupSidebarEvents, clearDirCache } from './sidebar.js';
+import { attachSidebarUploadHandler, renderSidebar, setupSidebarEvents, clearDirCache } from './sidebar.js';
 import { renderBreadcrumb } from './breadcrumb.js';
 import { renderFileList } from './file-list.js';
 import { uploadFile } from '../utils/upload.js';
-import { attachSidebarUploadHandler} from './sidebar.js';
 
 export function renderLayout(container) {
   container.innerHTML = `
@@ -163,7 +162,7 @@ export function renderLayout(container) {
   function refreshContent() {
     const state = getState();
     renderBreadcrumb(breadcrumbEl, navigateTo);
-    renderFileList(contentEl, state.currentPath, state.searchQuery);
+    renderFileList(contentEl, state.viewMode, state.currentPath, state.searchQuery);
   }
 
   // Header

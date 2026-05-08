@@ -1,7 +1,14 @@
+.bc-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
 .bc {
   display: flex;
   align-items: center;
-  gap: 0.15rem;
+  gap: 0;
   padding: 0.4rem 0.75rem;
   font-size: 0.8rem;
   color: var(--bc-text, #94a3b8);
@@ -9,10 +16,17 @@
   border: 1px solid var(--bc-border, #334155);
   border-radius: 6px;
   flex-shrink: 0;
+  width: 60%;
+  min-width: 0;
+}
+
+.bc-path {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
   overflow-x: auto;
   white-space: nowrap;
-  max-width: 60%;
-  margin-top: 0.5rem;
+  min-width: 0;
 }
 
 .bc-seg {
@@ -52,6 +66,35 @@
   width: 14px;
   height: 14px;
   flex-shrink: 0;
+}
+
+.bc-view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.bc-view-btn {
+  background: none;
+  border: 1px solid var(--bc-border, #334155);
+  color: var(--bc-text, #94a3b8);
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.bc-view-btn:hover {
+  background: var(--bc-hover, rgba(59, 130, 246, 0.1));
+  border-color: var(--bc-link, #3b82f6);
+}
+
+.bc-view-btn.active {
+  background: var(--bc-link, #3b82f6);
+  color: #fff;
+  border-color: var(--bc-link, #3b82f6);
 }
 
 @media (prefers-color-scheme: light) {
