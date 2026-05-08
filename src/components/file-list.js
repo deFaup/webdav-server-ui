@@ -176,8 +176,8 @@ function renderContextMenu(container) {
           if (isDir) item.filename += '/'; // ensure directories end with slash for deletion
           deleteItem(item.filename).then(() => {
             // After deletion, refresh the file list
-            console.log("call setCurrentPath")
-            setCurrentPath(lastRenderedPath);
+            activeItemPath = ''
+            setCurrentPath(lastRenderedPath); // TODO - change this to simple renderFileList
           }).catch(err => {
             alert(`Failed to delete: ${err.message}`);
           });
@@ -343,8 +343,9 @@ export async function renderFileList(container, viewMode, path = '/', searchQuer
       el.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        activeItemPath = itemPath; //aka el.dataset.filePath
+        activeItemPath = itemPath;
         if (isDir) {
+          activeItemPath = '' // set to empty since we move to a new path
           setCurrentPath(itemPath);
         } else {
           downloadFile(itemPath);
