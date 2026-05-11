@@ -255,7 +255,6 @@ export async function renderFileList(container, viewMode, path = '/', searchQuer
           activeItemPath === item.filename ? 'fl-grid-item-active' : ''
         ].filter(Boolean).join(' ');
 
-        // TODO - this does not render in grid but works in list view
         const dlBtn = !isDir
           ? `<button class="fl-grid-dl" data-file-path="${esc(item.filename)}" aria-label="Download ${esc(item.basename)}">${dlIcon}</button>`
           : '';
