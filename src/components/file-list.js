@@ -260,13 +260,18 @@ export async function renderFileList(container, viewMode, path = '/', searchQuer
           ? `<button class="fl-grid-dl" data-file-path="${esc(item.filename)}" aria-label="Download ${esc(item.basename)}">${dlIcon}</button>`
           : '';
 
-        // data-dir-path added at root level of card/grid makes it navigeable
+        const nameContent = isDir
+          ? `<button class="fl-grid-name-link">${esc(item.basename)}</button>`
+          : `<span class="fl-grid-name-text">${esc(item.basename)}</span>`;
+
         const includeDirPathForNavigation = isDir ? `data-dir-path="${esc(item.filename)}"` : ''
 
-        return `<div class="${cardClass}" ${includeDirPathForNavigation}>
+        return `<div class="${cardClass}">
           ${dlBtn}
-          <div class="fl-grid-icon">${icon}</div>
-          <div class="fl-grid-name" title="${esc(item.basename)}">${esc(item.basename)}</div>
+          <div class="fl-grid-name" ${includeDirPathForNavigation}>
+            <div class="fl-grid-icon">${icon}</div>
+            ${nameContent}
+          </div>
           ${size ? `<div class="fl-grid-size">${esc(size)}</div>` : ''}
         </div>`;
       }).join('');

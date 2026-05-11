@@ -43,16 +43,20 @@
 }
 
 .fl-name-link {
-  color: var(--fl-text, #e2e8f0);
   text-decoration: none;
   cursor: pointer;
   background: none;
   border: none;
-  font: inherit;
-  font-weight: 500;
-  font-size: 0.875rem;
   padding: 0;
   text-align: left;
+}
+
+.fl-name-link,
+.fl-name-text {
+  color: var(--fl-text, #e2e8f0);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -60,15 +64,6 @@
 
 .fl-name-link:hover {
   color: var(--fl-link, #3b82f6);
-}
-
-.fl-name-text {
-  color: var(--fl-text, #e2e8f0);
-  font-size: 0.875rem;
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .fl-size,
