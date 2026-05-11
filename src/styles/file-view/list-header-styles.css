@@ -1,7 +1,7 @@
 /* Header Row Styles */
 .fl-header {
   display: grid;
-  grid-template-columns: 1fr 120px 180px 48px;
+  grid-template-columns: var(--fl-col-name) var(--fl-col-size) var(--fl-col-date) var(--fl-col-action) var(--fl-col-ghost);
   align-items: center;
   padding: 0.5rem 1rem;
   margin: 0 0.5rem;
@@ -10,7 +10,7 @@
   color: var(--fl-text-muted, #64748b);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  border-bottom: 1px solid var(--fl-separator, rgba(148,163,184,0.12));
+  border-bottom: 1px solid var(--fl-separator, rgba(148, 163, 184, 0.12));
   user-select: none;
 }
 
@@ -18,6 +18,16 @@
 .fl-header-date {
   text-align: left;
 }
+
+.fl-header,
+.fl-row {
+  --fl-col-name: 1fr;
+  --fl-col-size: 120px;
+  --fl-col-date: 180px;
+  --fl-col-action: 48px;
+  --fl-col-ghost: 1fr;
+}
+
 .fl-resize-handle {
   position: absolute;
   top: 4px;

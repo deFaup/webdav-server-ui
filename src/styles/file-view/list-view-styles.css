@@ -1,13 +1,13 @@
 /* List View Rows Styles */
 .fl-row {
   display: grid;
-  grid-template-columns: 1fr 120px 180px 48px;
+  grid-template-columns: var(--fl-col-name) var(--fl-col-size) var(--fl-col-date) var(--fl-col-action) var(--fl-col-ghost);
   align-items: center;
   padding: 0.5rem 1rem;
   margin: 0 0.5rem;
   border-radius: 8px;
   transition: background 0.15s ease;
-  border-bottom: 1px solid var(--fl-separator, rgba(148,163,184,0.08));
+  border-bottom: 1px solid var(--fl-separator, rgba(148, 163, 184, 0.08));
   position: relative;
 }
 
@@ -39,7 +39,6 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  min-width: 0;
   overflow: hidden;
 }
 

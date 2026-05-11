@@ -83,17 +83,24 @@ function getFileIcon(type, name) {
   </svg>`;
 }
 
-let colWidths = { name: '1fr', size: '120px' };
+let colWidthsForListView = { name: '', size: '', date: '', action: '', ghost: '' };
+let colWidthsDefaults = { name: 150, size: 60 }; //px
 let activeItemPath = null;
 let contextMenuState = { open: false, x: 0, y: 0, item: null };
 let lastRenderedPath = null;
 
-function getGridCols() {
-  return `${colWidths.name} ${colWidths.size} 1fr 48px`;
-}
 
 function initResize(container) {
   const handles = container.querySelectorAll('.fl-resize-handle');
+  if (colWidthsForListView['name'] === '') {
+    const headerStyle = getComputedStyle(handles[0].parentElement);
+    colWidthsForListView.name = headerStyle.getPropertyValue('--fl-col-name');
+    colWidthsForListView.size = headerStyle.getPropertyValue('--fl-col-size');
+    colWidthsForListView.date = headerStyle.getPropertyValue('--fl-col-date');
+    colWidthsForListView.action = headerStyle.getPropertyValue('--fl-col-action');
+    colWidthsForListView.ghost = headerStyle.getPropertyValue('--fl-col-ghost');
+  }
+
   handles.forEach(handle => {
     handle.addEventListener('mousedown', (e) => {
       e.preventDefault();
@@ -106,10 +113,10 @@ function initResize(container) {
 
       const onMove = (ev) => {
         const delta = ev.clientX - startX;
-        const newWidth = Math.max(60, startWidth + delta);
-        colWidths[col] = newWidth + 'px';
-        const cols = getGridCols();
-        container.querySelector('.fl-header').style.gridTemplateColumns = cols;
+        const newWidth = Math.max(colWidthsDefaults[col], startWidth + delta);
+        colWidthsForListView[col] = newWidth + 'px';
+        const cols = `${colWidthsForListView.name} ${colWidthsForListView.size} ${colWidthsForListView.date} ${colWidthsForListView.action} ${colWidthsForListView.ghost}`;
+        header.style.gridTemplateColumns = cols;
         container.querySelectorAll('.fl-row').forEach(r => r.style.gridTemplateColumns = cols);
       };
 
@@ -127,7 +134,7 @@ function initResize(container) {
 function syncSelection(container, rootEl) {
   // remove current active
   container.querySelectorAll('.fl-row.fl-row-active, .fl-grid-item.fl-grid-item-active').forEach(el => {
-    el.classList.contains('fl-row') ? 
+    el.classList.contains('fl-row') ?
       el.classList.toggle('fl-row-active') : el.classList.toggle('fl-grid-item-active');
   });
 
@@ -252,7 +259,7 @@ export async function renderFileList(container, viewMode, path = '/', searchQuer
         const dlBtn = !isDir
           ? `<button class="fl-grid-dl" data-file-path="${esc(item.filename)}" aria-label="Download ${esc(item.basename)}">${dlIcon}</button>`
           : '';
-        
+
         // data-dir-path added at root level of card/grid makes it navigeable
         const includeDirPathForNavigation = isDir ? `data-dir-path="${esc(item.filename)}"` : ''
 
@@ -291,7 +298,7 @@ export async function renderFileList(container, viewMode, path = '/', searchQuer
           ? `<button class="fl-btn-dl" data-file-path="${esc(item.filename)}" aria-label="Download ${esc(item.basename)}">${dlIcon}</button>`
           : '';
 
-        return `<div class="${rowClass}" style="grid-template-columns: ${getGridCols()}">
+        return `<div class="${rowClass}"}">
           <div class="fl-name">
             <div class="fl-icon-wrap">${icon}</div>
             ${nameContent}
@@ -299,12 +306,13 @@ export async function renderFileList(container, viewMode, path = '/', searchQuer
           <div class="fl-size">${esc(size)}</div>
           <div class="fl-date">${esc(date)}</div>
           <div class="fl-actions">${action}</div>
+          <div></div>  <!-- ghost spacer -->
         </div>`;
       }).join('');
 
       container.innerHTML = `
         <div class="fl-list">
-          <div class="fl-header" style="grid-template-columns: ${getGridCols()}">
+          <div class="fl-header">
             <div>Name<div class="fl-resize-handle" data-col="name"></div></div>
             <div class="fl-header-size">Size<div class="fl-resize-handle" data-col="size"></div></div>
             <div class="fl-header-date">Modified</div>
@@ -314,7 +322,7 @@ export async function renderFileList(container, viewMode, path = '/', searchQuer
         </div>
       `;
     }
-  
+
     // Column resize
     initResize(container);
 
