@@ -83,22 +83,33 @@ function getFileIcon(type, name) {
   </svg>`;
 }
 
-let colWidthsForListView = { name: '', size: '', date: '', action: '', ghost: '' };
-let colWidthsDefaults = { name: 150, size: 60 }; //px
+let currentColWidths = { name: '', size: '', date: '', action: '', ghost: '' }; //include px suffix
+let colMinWidths = { name: 150, size: 60 }; //px but float
 let activeItemPath = null;
 let contextMenuState = { open: false, x: 0, y: 0, item: null };
 let lastRenderedPath = null;
 
-
 function initResize(container) {
   const handles = container.querySelectorAll('.fl-resize-handle');
-  if (colWidthsForListView['name'] === '') {
-    const headerStyle = getComputedStyle(handles[0].parentElement);
-    colWidthsForListView.name = headerStyle.getPropertyValue('--fl-col-name');
-    colWidthsForListView.size = headerStyle.getPropertyValue('--fl-col-size');
-    colWidthsForListView.date = headerStyle.getPropertyValue('--fl-col-date');
-    colWidthsForListView.action = headerStyle.getPropertyValue('--fl-col-action');
-    colWidthsForListView.ghost = headerStyle.getPropertyValue('--fl-col-ghost');
+  if (currentColWidths['name'] === '') {
+    console.log("initializing column widths for list view");
+    const headerStyles = getComputedStyle(handles[0])
+
+    const defaultColumnsWidths = headerStyles.getPropertyValue('--fl-default-template-columns');
+    const [a, b, size, date, action, ghost] = defaultColumnsWidths.split(' ');
+    currentColWidths.size = size;
+    currentColWidths.date = date;
+    currentColWidths.action = action;
+    currentColWidths.ghost = ghost;
+    // name has flexible default; actual value fetched later
+
+    colMinWidths.name = headerStyles.getPropertyValue('--fl-min-name-width');
+    colMinWidths.size = headerStyles.getPropertyValue('--fl-min-size-width');
+
+    const nameEl = handles[0].closest('.fl-header-size') ?
+      handles[1].parentElement : handles[0].parentElement;
+    currentColWidths.name = nameEl.getBoundingClientRect().width + 'px';
+    console.log("getting default values except name: ", currentColWidths);
   }
 
   handles.forEach(handle => {
@@ -113,9 +124,9 @@ function initResize(container) {
 
       const onMove = (ev) => {
         const delta = ev.clientX - startX;
-        const newWidth = Math.max(colWidthsDefaults[col], startWidth + delta);
-        colWidthsForListView[col] = newWidth + 'px';
-        const cols = `${colWidthsForListView.name} ${colWidthsForListView.size} ${colWidthsForListView.date} ${colWidthsForListView.action} ${colWidthsForListView.ghost}`;
+        const newWidth = Math.max(colMinWidths[col], startWidth + delta);
+        currentColWidths[col] = newWidth + 'px';
+        const cols = `${currentColWidths.name} ${currentColWidths.size} ${currentColWidths.date} ${currentColWidths.action} ${currentColWidths.ghost}`;
         header.style.gridTemplateColumns = cols;
         container.querySelectorAll('.fl-row').forEach(r => r.style.gridTemplateColumns = cols);
       };
@@ -211,6 +222,9 @@ export async function renderFileList(container, viewMode, path = '/', searchQuer
       </div>
     </div>
   `;
+  // on refresh / re-render the width of each header column is reset to its default
+  // this code will reset the array in 'initResize'
+  if (currentColWidths['name'] !== '') { currentColWidths['name'] = ''; }
 
   try {
     const contents = await listDirectory(path);
@@ -325,10 +339,9 @@ export async function renderFileList(container, viewMode, path = '/', searchQuer
           ${rows}
         </div>
       `;
-    }
 
-    // Column resize
-    initResize(container);
+      initResize(container);
+    }
 
     // Close menu when clicking empty space
     container.addEventListener('click', (e) => {
