@@ -156,7 +156,7 @@ export function renderLayout(container) {
     }
 
     setUploadMessage(`<div style="color:var(--green-text, #6ee7b7);font-size:0.8rem;">Upload complete.</div>`);
-    refreshContent();
+    renderFileList(contentEl, state.viewMode, state.currentPath, state.searchQuery);
   }
 
   function refreshContent() {

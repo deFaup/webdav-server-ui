@@ -1,6 +1,6 @@
 import { listDirectory, deleteItem } from '../utils/file-ops.js';
 import { downloadFile } from '../utils/download.js';
-import { setCurrentPath } from '../utils/state.js';
+import { getState, setCurrentPath } from '../utils/state.js';
 import { filterItems } from './search.js';
 import '../styles/file-view/base-styles.css';
 import '../styles/file-view/list-header-styles.css';
@@ -186,6 +186,7 @@ function renderContextMenu(container) {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const action = btn.dataset.action;
+      const state = getState();
 
       if (action === 'download') {
         downloadFile(item.filename);
@@ -195,7 +196,7 @@ function renderContextMenu(container) {
           deleteItem(item.filename).then(() => {
             // After deletion, refresh the file list
             activeItemPath = ''
-            setCurrentPath(lastRenderedPath); // TODO - change this to simple renderFileList
+            renderFileList(container, state.viewMode, state.currentPath, state.searchQuery);
           }).catch(err => {
             alert(`Failed to delete: ${err.message}`);
           });
