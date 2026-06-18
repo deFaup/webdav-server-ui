@@ -6,6 +6,9 @@ export default defineConfig(({ mode }) => {
 
   return {
     root: '.',
+    server: {
+      host: '0.0.0.0',
+    },
     build: {
       outDir: isExtension ? 'dist-extension' : 'dist',
       rollupOptions: {
