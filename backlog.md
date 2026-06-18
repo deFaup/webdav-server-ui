@@ -13,10 +13,7 @@ change data-file-path to fl-download-path
 rename all 'grid-item' into 'card'
 contextMenuState should it be a global var? param to the render menu function seems better
 
-fix the dl action on grid view
-     remove the icon
-          might break the highlight thing
-     right clik to download
+DONE - fix the dl action on grid view
 
 breadcrumb
      fix the parent path not working on breadcrumb path. even though the ../.. parent does work
@@ -25,4 +22,10 @@ breadcrumb
 sidebar
      when navigating, if clicking on the name of the folder it will move its chevron to a down one even though the chevron was not click and thus the path is not loaded. when clicking on the chevron it will switch to a down one and show nothing. the current fix is to click twice on the chevron to force the load
      clicking the server entry does not change its chevron to a down one which is good.
+
 explore pattern "event delegation" — one listener on the parent catches clicks from all children. It's very common and event.target is essential there.
+
+make the page phone compatible:
+- download icon is sometimes working
+- right click menu opens but is not intuitive and download still fails
+- resizing does not work

@@ -23,3 +23,5 @@ When implementing, update both files @tasks.html and @tasks.md to reflect progre
 ## Theme
 Theme should match user's system theme
 OS theme — add prefers-color-scheme media query to login component styles
+
+Code review: All outputs will be reviewed by Cursor.
